@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include "si_sdl.h"
 #include "si_font.h"
 
@@ -11,6 +11,7 @@ extern char si_font_invader_explode[8][13];
 extern char si_font_alphanum[43][8][5];
 extern char si_font_tank_explode[2][8][16];
 extern char si_font_tank_shoot[8][1];
+extern char si_font_shoot[8][5];
 
 SDL_Window *win = NULL;
 SDL_Renderer *renderer = NULL;
@@ -55,9 +56,11 @@ void draw_sprite(char *data, int rows, int cols, int x, int y, int scale)
 }
 
 /* fonction qui affiche une phrase */
-static void draw_text(const char *text, int x, int y, int scale, int spacing)
+static void draw_text(const char *text, int l, int c, int scale, int spacing)
 {
     int i = 0;
+    int x = l *7*3;
+    int y = c *8*3;
     while (text[i] != '\0') {   // tant qu'on n'est pas à la fin de la phrase
         int index = font_index_from_char(text[i]);
         draw_sprite(&si_font_alphanum[index][0][0], 8, 5, x, y, scale);
@@ -99,22 +102,21 @@ void render_update()
     /* ON DESSINE TOUT EN BLANC ENSUITE */
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
   
-    draw_text("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 -<>.?'", 0, 0, 3, 2);
-    draw_text("t'as bien dormi ?", 0, 30, 5, 2);
+    draw_text("SCORE<1> HI-score score<2>", 0, 0, 3, 6);
 
     draw_tank(300, 550, 3);
     draw_tank_shoot(300, 510, 3);
     draw_tank_explode(0, 350, 550, 3);
     draw_tank_explode(1, 400, 550, 3);
 
-    draw_invader(0, 1, 300, 200, 3);
-    draw_invader(0, 0, 340, 200, 3);
-    draw_invader(1, 0, 380, 200, 3);
-    draw_invader(1, 1, 420, 200, 3);
-    draw_invader(2, 0, 460, 200, 3);
-    draw_invader(2, 1, 500, 200, 3);
-    draw_invader_explode(540, 200, 3);
-    draw_ufo(550, 100, 3);
+    draw_invader(0, 1, 0, 200, 3);
+    draw_invader(0, 0, 40, 200, 3);
+    draw_invader(1, 0, 80, 200, 3);
+    draw_invader(1, 1, 120, 200, 3);
+    draw_invader(2, 0, 160, 200, 3);
+    draw_invader(2, 1, 200, 200, 3);
+    draw_invader_explode(240, 200, 3);
+    draw_ufo(150, 100, 3);
 
     /* copie du renderer dans la fenêtre */
     SDL_RenderPresent(renderer);
@@ -124,10 +126,15 @@ void render_update()
 int create_window(void)
 {
     SDL_Event events;
-    int x = 60; /* coord. x du coin haut gauche de la fenêtre */
-    int y = 60; /* coord. y du coin haut gauche de la fenêtre */
-    int w = 800; /* largeur de la fenêtre */
-    int h = 600; /* hauteur de la fenêtre */
+    SDL_Init(SDL_INIT_VIDEO);
+    SDL_DisplayMode dm;
+    SDL_GetCurrentDisplayMode(0, &dm);
+    printf("Résolution : %d x %d\n", dm.w,dm.h);
+    
+    int x = dm.w/2 -273 +3; /* coord. x du coin haut gauche de la fenêtre */
+    int y = dm.h/2 -360; /* coord. y du coin haut gauche de la fenêtre */
+    int w = 546-6; /* largeur de la fenêtre */
+    int h = 720; /* hauteur de la fenêtre */
     int running = 1;
     int ret = 1;
   
