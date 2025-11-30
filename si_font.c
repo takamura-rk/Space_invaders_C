@@ -654,3 +654,44 @@ char si_font_alphanum[43][8][5]=
       {0,0,0,0,0}
     }
   };
+
+
+/* renvoie le sprite du caractère ’c’, ainsi que sa largeur dans width
+char *si_font_alphanum_get(char c, int *width){
+  
+
+}
+*/
+
+
+ /* renvoie le sprite du tank, ainsi que sa largeur dans width */
+char *si_font_tank_get(int *width)
+{
+  *width=13;
+  char *tank= &si_font_tank[0][0];
+  return tank;
+}
+
+/* renvoie le sprite de l’explosion du tank, ainsi que sa largeur dans width */
+ char *si_font_tank_explode_get(int type, int *width)
+{
+  *width=16;
+  char *tank_explode=&si_font_tank_explode[type][0][0];
+  return tank_explode;
+}
+
+/* renvoie le sprite du tir du tank, ainsi que sa largeur dans width */
+ char *si_font_tank_shoot_get(int *width)
+ {
+ *width=1;
+  char *tank_shoot=&si_font_tank_shoot[0][0];
+  return tank_shoot;
+ }
+
+ /* renvoie le sprite de l’UFO, ainsi que sa largeur dans width */
+char *si_font_ufo_get(int *width)
+{
+ *width=16;
+  char *ufo=&si_font_ufo[0][0];
+  return ufo;
+}
