@@ -12,7 +12,7 @@ extern char si_font_invader_explode[8][13];
 extern char si_font_alphanum[43][8][5];
 extern char si_font_tank_explode[2][8][16];
 extern char si_font_tank_shoot[8][1];
-extern char si_font_shoot[8][5];
+extern char si_font_invader_shoot[8][5];
 
 SDL_Window *win = NULL;
 SDL_Renderer *renderer = NULL;
@@ -96,7 +96,7 @@ void si_ufo_display(int x, int y, int scale)
 }
 void si_shoot_display(int x, int y, int scale)
 {
-  si_display_sprite(&si_font_shoot[0][0],8,5,x,y,scale);
+  si_display_sprite(&si_font_invader_shoot[0][0],8,5,x,y,scale);
 }
 
 void render_update()
