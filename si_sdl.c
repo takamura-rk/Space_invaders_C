@@ -121,7 +121,7 @@ void render_update()
   si_invader_display(2, 0, 160, 200, 3);
   si_invader_display(2, 1, 200, 200, 3);
   si_invader_explode_display(240, 200, 3);
-  si_ufo_display(150, 100, 3);
+  si_ufo_display(150, 500, 3);
   si_shoot_display(120,240,3);
 
   /* copie du renderer dans la fenêtre */
