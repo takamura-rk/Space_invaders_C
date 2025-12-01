@@ -1,11 +1,13 @@
 void render_update();
 int create_window(void);
 
-void draw_tank(int x, int y, int scale);
-void draw_tank_shoot(int x, int y, int scale);
-void draw_tank_explode(int frame, int x, int y, int scale);
-void draw_invader(int type, int frame, int x, int y, int scale);
-void draw_invader_explode(int x, int y, int scale);
-void draw_ufo(int x, int y, int scale);
-void draw_sprite(char *data, int rows, int cols, int x, int y, int scale);
+void si_tank_display(int x, int y, int scale);
+void si_tank_shoot_display(int x, int y, int scale);
+void si_tank_explode_display(int frame, int x, int y, int scale);
+void si_invader_display(int type, int frame, int x, int y, int scale);
+void si_invader_explode_display(int x, int y, int scale);
+void si_ufo_display(int x, int y, int scale);
+void si_shoot_display(int x , int y , int scale);
+
+void si_display_sprite(char *data, int rows, int cols, int x, int y, int scale);
 
