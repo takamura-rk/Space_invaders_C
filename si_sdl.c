@@ -99,7 +99,7 @@ void si_shoot_display(int x, int y, int scale)
   si_display_sprite(&si_font_invader_shoot[0][0],8,5,x,y,scale);
 }
 
-void render_update()
+void game_update()
 {
   /* FOND NOIR */
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -129,7 +129,7 @@ void render_update()
   update = 0;
 }
 
-int create_window(void)
+int game_new(void)
 {
   SDL_Event events;
   SDL_Init(SDL_INIT_VIDEO);
@@ -181,7 +181,7 @@ int create_window(void)
     }
 
     if (update)
-      render_update();
+      game_update();
   }
   
   ret = 0;

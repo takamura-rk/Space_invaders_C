@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[])
 {
-  create_window();
+  game_new();
   return 0;
   (void)argc;
   (void)argv;

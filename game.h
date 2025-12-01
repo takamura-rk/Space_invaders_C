@@ -3,8 +3,8 @@
 
 #include <SDL.h>
 #include "si_font.h"
+#include "si.h"
 
-typedef struct Si Si;
 
 typedef struct
 {

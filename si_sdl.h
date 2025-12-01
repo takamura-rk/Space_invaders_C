@@ -1,5 +1,5 @@
-void render_update();
-int create_window(void);
+void game_update();
+int game_new(void);
 
 void si_tank_display(int x, int y, int scale);
 void si_tank_shoot_display(int x, int y, int scale);
