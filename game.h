@@ -2,7 +2,7 @@
 #define GAME_H
 
 #include <SDL.h>
-#include "si.h"
+#include "si_font.h"
 
 typedef struct Si Si;
 

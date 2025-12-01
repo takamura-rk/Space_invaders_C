@@ -1,6 +1,8 @@
 #ifndef SI_FONT_H
 #define SI_FONT_H
 
+#include "si.h"
+
 
 /* renvoie le sprite du caractère ’c’, ainsi que sa largeur dans width */
  char *si_font_alphanum_get(char c, int *width);

@@ -4,6 +4,7 @@
 #include "si_sdl.h"
 #include "si_font.h"
 
+
 extern char si_font_tank[8][13];
 extern char si_font_ufo[8][16];
 extern char si_font_invaders[3][2][8][12];

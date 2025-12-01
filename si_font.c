@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "si_font.h"
+
   /*    === Tank ===   */
 char si_font_tank[8][13]={
 
@@ -163,7 +164,7 @@ char si_font_invader_explode[8][13]=
   };
 
 /*   === Tir d'un ennemi ===   */
-char si_font_shoot[8][5]=
+char si_font_invader_shoot[8][5]=
   {
     {0,0,0,1,0},
     {0,0,1,0,0},
@@ -694,4 +695,30 @@ char *si_font_ufo_get(int *width)
  *width=16;
   char *ufo=&si_font_ufo[0][0];
   return ufo;
+}
+
+ /*
+ * renvoie le sprite de l’ennemi de type ’t’ et du modèle (pour
+ * l’animation), ainsi que sa largeur dans width
+ */
+ char *si_font_invader_get(Si_Type t, int model, int *width)
+ {
+   *width=12;
+   char *invaders=&si_font_invaders[t][model][0][0];
+   return invaders;
+ }
+   
+ /* renvoie le sprite de l’explosion d’un ennemi, ainsi que sa largeur dans width */
+char *si_font_invader_explode_get(int *width)
+{
+  *width=16;
+  char *invaders_explode=&si_font_invader_explode[0][0];
+  return invaders_explode;
+}
+ /* renvoie le sprite du tir d’un ennemi, ainsi que sa largeur dans width */
+char *si_font_invader_shoot_get(int *width)
+{
+  *width=5;
+  char *invaders_shoot=&si_font_invader_shoot[0][0];
+  return invaders_shoot;
 }

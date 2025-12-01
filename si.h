@@ -1,3 +1,13 @@
+/* type d'ennemi */
+typedef enum
+{
+  SI_TYPE_SQUID = 1,
+  SI_TYPE_CRAB,
+  SI_TYPE_OCTOPUS,
+}Si_Type;
+
+
+
 typedef struct Invaders Invaders;
 typedef struct Tank Tank;
 typedef struct Si Si;
@@ -6,8 +16,8 @@ struct Invaders
 {
   int x;
   int y;
-  int direction;
-  int firing;
+  int direction; /*+-1*/
+  int firing;  /*is fire ?*/
   int bomb_x;
   int bomb_y;
 };
@@ -34,3 +44,4 @@ struct Si
   Tank tank;
   Invaders invaders;
 };
+
