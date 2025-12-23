@@ -1,3 +1,8 @@
+#ifndef SI_H
+#define SI_H
+
+
+
 /* type d'ennemi */
 typedef enum
 {
@@ -108,3 +113,7 @@ int si_get_points(Si_Type t);
  * Met à jour la matrice.
  */
  int si_invader_is_hit(Si *si);
+
+
+
+#endif 
