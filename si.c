@@ -1,13 +1,15 @@
 #include <stdio.h>
+#include "si.h"
+#include "game.h"
 
 char matrice[5][11]=
-{
-  {1,1,1,1,1,1,1,1,1,1,1},
-  {2,2,2,2,2,2,2,2,2,2,2},
-  {2,2,2,2,2,2,2,2,2,2,2},
-  {3,3,3,3,3,3,3,3,3,3,3},
-  {3,3,3,3,3,3,3,3,3,3,3}
-};
+  {
+    {1,1,1,1,1,1,1,1,1,1,1},
+    {2,2,2,2,2,2,2,2,2,2,2},
+    {2,2,2,2,2,2,2,2,2,2,2},
+    {3,3,3,3,3,3,3,3,3,3,3},
+    {3,3,3,3,3,3,3,3,3,3,3}
+  };
 
 /*
  * crée un pointeur vers la structure Si. On passe en paramètre
@@ -29,6 +31,14 @@ Si *si_new(int window_width, int window_height, int pixel_size)
 void si_del(Si *si)
 {
   free(si);
+}
+
+
+/* renvoie la matrice */
+char *si_get_matrix(void)
+{
+  char *matrix=&matrice[0][0];
+  return matrix;
 }
 
 /* renvoie le nombre d’ennemis restant dans la matrice */
@@ -149,4 +159,54 @@ int si_invaders_bomb_can_move_down(Si *si)
 
 int si_invaders_can_move_left(Si *si){
 
+/* tank */
+/*
+* teste si le tank peut se d\’eplacer vers le haut. SI c’est possible,
+* met à jour la coordonné y du tir da Tank.
+*/
+int si_tank_shoot_can_move_up(Si *si)
+{
+  if(si->tank.firing==0){
+    return 0;
+  }
+  si->tank.shoot_y-=si->pixel_size;
+  /*si le tire sort de l'écran on remet firing à 0*/
+  if(si->tank.shoot_y<=0){
+    si->tank.firing=0;
+    return 1;
+  }
+  /*si le tire touche un ennemie on remet firing à 0*/
+  if (si_invader_is_hit(si)==1)
+    {
+        si->tank.firing = 0;
+        return 1;
+    }
+  return 1;
+}
+
+/* renvoie 1 si le tank est touch\’e, 0 sinon 
+int si_tank_is_hit(Si *si)
+{
+  if(si->invaders.firing==0){
+    return 0;
+  }
+ 
+  
+
+  
+  return 1;
+  }*/
+
+/* invaders */
+/*
+* Détermine dans quelle colonnnede la matrice, choisie aléatoirement,
+* la bombe est lachée. Met à jour les coordonn\’ees de la bombe
+* dans Invaders.
+
+void si_invaders_get_column(Si *si){
+ 
+  
+    
 }*/
+
+

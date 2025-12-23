@@ -1,5 +1,7 @@
-#ifndef "SI_H"
-#define "SI_H"
+#ifndef SI_H
+#define SI_H
+
+
 
 /* type d'ennemi */
 typedef enum
