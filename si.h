@@ -114,4 +114,5 @@ int si_get_points(Si_Type t);
  */
  int si_invader_is_hit(Si *si);
 
-#endif
+
+
