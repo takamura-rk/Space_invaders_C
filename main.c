@@ -1,11 +1,14 @@
-#include <stdio.h>
-#include <SDL2/SDL.h>
-#include "si_font.h"
-#include "si_sdl.h"
+#include "game.h"
 
 int main(int argc, char *argv[])
 {
-  game_new();
+  Game *g;
+  
+  g= game_new();
+  if (!g)
+    return 1;
+
+  game_update(g);
   return 0;
   (void)argc;
   (void)argv;

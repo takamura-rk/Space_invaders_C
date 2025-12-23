@@ -2,7 +2,6 @@
 #define GAME_H
 
 #include <SDL.h>
-#include "si_font.h"
 #include "si.h"
 
 
@@ -25,8 +24,10 @@ typedef struct
   char update;
 } Game;
 
-Game *game_new(int x, int y);
-void   game_run(Game *g);
-void   game_del(Game *g);
+Game *game_new();
+void game_update(Game *g);
+
+void game_run(Game *g);
+void game_del(Game *g);
 
 #endif

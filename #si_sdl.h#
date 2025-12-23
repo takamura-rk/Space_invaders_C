@@ -1,5 +1,5 @@
 void game_update();
-
+int game_new(void);
 
 void si_tank_display(int x, int y, int scale);
 void si_tank_shoot_display(int x, int y, int scale);
@@ -10,5 +10,3 @@ void si_ufo_display(int x, int y, int scale);
 void si_shoot_display(int x , int y , int scale);
 
 void si_display_sprite(char *data, int rows, int cols, int x, int y, int scale);
-void si_text_display(const char *text, int l, int c, int scale, int spacing);
-int font_index_from_char(char c);
