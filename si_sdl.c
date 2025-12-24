@@ -111,16 +111,16 @@ void si_invaders_display(Game *g, int x0, int y0)
     const int SPR_W = 12 * g->pixel_size;
     const int SPR_H = 8  * g->pixel_size;
 
-    /* Espacement entre ennemis (tu peux ajuster) */
-    const int GAP_X = 4 * g->pixel_size;
-    const int GAP_Y = 4 * g->pixel_size;
+    /* Espacement entre ennemis */
+    const int GAP_X = 2 * g->pixel_size;
+    const int GAP_Y = 3 * g->pixel_size;
 
     for (int row = 0; row < 5; ++row) {
         for (int col = 0; col < 11; ++col) {
 
             int v = m[row * 11 + col];
             if (v == 0) continue; /* ennemi détruit */
-            //  1,2,3 dans ta matrice -> type 0,1,2 pour si_invader_display
+            //  1,2,3 dans la matrice d'ennemis -> type 0,1,2 pour si_invader_display
             int type = 0;
             if (v == 1)
 	      type = 0;
@@ -133,7 +133,6 @@ void si_invaders_display(Game *g, int x0, int y0)
             int x = x0 + col * (SPR_W + GAP_X);
             int y = y0 + row * (SPR_H + GAP_Y);
 
-            /* ta fonction déjà existante */
             si_invader_display(g, type, 0, x, y);
         }
     }

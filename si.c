@@ -31,6 +31,10 @@ Si *si_new(int window_width, int window_height, int pixel_size)
   si->life_2 = 1;
   si->score_highest =0;
 
+  si->tank.x = (window_width / 2) - (13 * pixel_size) / 2;
+  si->tank.firing = 0;
+
+
   return si;
 }
 

@@ -21,7 +21,6 @@ Game *game_new(void)
   g->count_invaders=0;
   g->count_shoot=0;
   g->update=1;
-
   
   // SDL_Event events; (ligne plus tres utile)
   if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -30,7 +29,7 @@ Game *game_new(void)
       free(g);
       return NULL;
     }
-
+  
   SDL_DisplayMode dm;
   SDL_GetCurrentDisplayMode(0, &dm);
   printf("Résolution : %d x %d\n", dm.w,dm.h);
@@ -57,6 +56,7 @@ Game *game_new(void)
       free(g);
       return NULL;
     }
+
   // création du renderer
   g->ren= SDL_CreateRenderer(g->win, -1, SDL_RENDERER_ACCELERATED);
   if (g->ren == NULL)
@@ -68,6 +68,7 @@ Game *game_new(void)
       free(g);
       return NULL;
     }
+
 
   return g;
 }
@@ -85,26 +86,46 @@ void game_del(Game *g)
 
 void game_run(Game *g)
 {
-    if (!g) return;
+  int running = 1;
+  SDL_Event events;
 
-    SDL_Event events;
-    int running = 1;
 
-    while (running) {
-        while (SDL_PollEvent(&events)) {
-            switch (events.type) {
-            case SDL_QUIT:
-                running = 0;
-                break;
-            case SDL_KEYDOWN:
-                if (events.key.keysym.sym == SDLK_q) running = 0;
-                break;
-            }
-        }
+  while (running)
+    {
+    
+      while (SDL_PollEvent(&events))
+	{
+	  switch (events.type)
+	    {
+	    case SDL_QUIT:
+	      running = 0; //On ferme la fenetre
+	      break;
+	    case SDL_KEYDOWN:
+	      switch (events.key.keysym.sym)
+		{
+		case SDLK_q:
+		  running = 0; //On ferme la fenetre
+		  break;
+		case SDLK_ESCAPE:
+		  running = 0;
+		  break;
+		case SDLK_SPACE:
+		  if (!g->play_game)
+		    {
+		      g->play_game = 1;   
+		      g->update = 1;    
+		    }
+		  break; 
+		}
+	      break;
 
-        if (g->update) {
-            game_update(g);
-        }
+	    }
+	  if (g->update)
+	    {
+	      game_update(g);
+	    }
+	  break;
+	}
     }
 }
 
@@ -115,7 +136,11 @@ void game_update(Game *g)
   SDL_RenderClear(g->ren);
   /* ON DESSINE TOUT EN BLANC ENSUITE */
   SDL_SetRenderDrawColor(g->ren, 255, 255, 255, 255);
-
+  si_text_display(g,"SCORE<1> HI-score score<2>", 0, 0, 6);
+  si_text_display(g,"0000", 2, 2, 6);
+  si_text_display(g,"0000", 2, 11, 6);
+  si_text_display(g,"0000", 2, 20, 6);
+  
   if (!g->play_game)
     {
       menu(g);
@@ -126,21 +151,11 @@ void game_update(Game *g)
     }
   else
     {
-      /* Afficher les ennemis (matrice) */
-      si_invaders_display(g, g->si->invaders.x, g->si->invaders.y);
+      si_invaders_display(g, 30, 120);
 
-      /* Si les ennemis tirent, afficher la bombe */
-      if (g->si->invaders.firing)
-	si_shoot_display(g, g->si->invaders.bomb_x, g->si->invaders.bomb_y);
-
-      /* Afficher le tank (il est sur la dernière ligne de caractères) */
-      si_tank_display(g, g->si->tank.x, (29 * 8 * g->pixel_size));
-
-      /* Si le tank tire, afficher le tir */
-      if (g->si->tank.firing)
-	si_tank_shoot_display(g, g->si->tank.shoot_x, g->si->tank.shoot_y);
+      int tank_y = g->window_height - (8 * g->pixel_size);
+      si_tank_display(g, g->si->tank.x, tank_y);
     }
-  
   SDL_RenderPresent(g->ren);
 
   g->update = 0;

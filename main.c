@@ -8,8 +8,8 @@ int main(int argc, char *argv[])
   if (!g)
     return 1;
 
-  game_update(g);
-  
+  game_run(g);
+  game_del(g);
   return 0;
   (void)argc;
   (void)argv;
