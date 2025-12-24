@@ -102,7 +102,8 @@ int si_get_points(Si_Type t);
  * Met à jour la position de la matrice.
  */
 
- int si_invaders_can_move_left(Si *si);
+int si_invaders_can_move_left(Si *si);
+
  /*
  * Renvoie 1 si les ennemis peuvent se déplacer vers la droite, 0 sinon.
  * Met à jour la position de la matrice.

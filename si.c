@@ -150,6 +150,7 @@ int si_invaders_bomb_can_move_down(Si *si)
     return 0;
   }
   si->invaders.bomb_y+=si->pixel_size;
+  
   /*Si la bombe sort de l'écran remet invaders.firing à 0*/
   if(si->invaders.bomb_y>=si->window_height){
     si->invaders.firing=0;
@@ -167,22 +168,55 @@ int si_invaders_bomb_can_move_down(Si *si)
 /*
 * Renvoie 1 si les ennemis peuvent se déplacer vers la gauche, 0 sinon.
 * Met à jour la position de la matrice.
-
-int si_invaders_can_move_left(Si *si){
 */
 
-
-/* invaders */
-/*
-* Détermine dans quelle colonnnede la matrice, choisie aléatoirement,
-* la bombe est lachée. Met à jour les coordonn\’ees de la bombe
-* dans Invaders.
-
-void si_invaders_get_column(Si *si){
- 
+int si_invaders_can_move_left(Si *si)
+{
+  /*vérifier si la direction est correcte*/
+  if(si->invaders.direction != -1){
+    return 0;
+  }
   
+  /* vérifier si on peut aller vers la gauche:on va à gauche */
+  if(si->invaders.x- si->pixel_size >=0){
+    si->invaders.x -= si->pixel_size;
+    return 1;
+  }
+  /* si bord gauche est atteint, on redescned et on change de direction */
+  si->invaders.y+= 8 * si->pixel_size;
+  si->invaders.direction = +1;
+  
+  return 1;
+}
+
+
+ /*
+ * Renvoie 1 si les ennemis peuvent se déplacer vers la droite, 0 sinon.
+ * Met à jour la position de la matrice.
+ */
+
+int si_invaders_can_move_right(Si *si)
+{
+  int width_matrix= 10 * 8 *si->pixel_size;
     
-}*/
+  /*vérifier si la direction est correcte*/
+  if(si->invaders.direction != 1){
+    return 0;
+  }
+
+  /*vérifier si on peut aller vers la droite: on va vers la droite */
+  if(si->invaders.x + si->pixel_size + width_matrix <=si->window_width){
+    si->invaders.x += si->pixel_size;
+    return 1;
+  }
+
+  /*si bord droite atteint, on redescend et on change de direction*/
+  si->invaders.y += 8 * si->pixel_size;
+  si->invaders.direction = -1;
+
+  return 1;
+}
+
 
  /*
  * Renvoie 1 si un ennemi est touché par le tir du tank, 0 sinon.
@@ -190,6 +224,8 @@ void si_invaders_get_column(Si *si){
  */
  int si_invader_is_hit(Si *si)
  {
-   return 0;
+   if(si->tank.firing==0){
+     return 0;
+   }
  }
 
