@@ -56,6 +56,8 @@ struct Si
  */
  Si *si_new(int window_width, int window_height, int pixel_size);
 
+void si_del(Si *si);
+
 /*Détruit les ressources */
 void si_sdl(Si *si);
 

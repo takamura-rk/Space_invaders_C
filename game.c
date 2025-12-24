@@ -1,9 +1,15 @@
 #include "game.h"
+#include "si_sdl.h"
+#include "si.h"
+#include "si_menu.h"
 
 Game *game_new(void)
 {
   //INITIALISATION DE LA STRUCTURE g
   Game *g=malloc(sizeof *g);
+  if (!g)
+    return NULL;
+  
   g->win=NULL;
   g->ren=NULL;
   g->window_width=546-6;
@@ -17,8 +23,14 @@ Game *game_new(void)
   g->update=1;
 
   
-  SDL_Event events;
-  SDL_Init(SDL_INIT_VIDEO);
+  // SDL_Event events; (ligne plus tres utile)
+  if (SDL_Init(SDL_INIT_VIDEO) < 0)
+    {
+      SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "SDL_Init error: %s\n", SDL_GetError());
+      free(g);
+      return NULL;
+    }
+
   SDL_DisplayMode dm;
   SDL_GetCurrentDisplayMode(0, &dm);
   printf("Résolution : %d x %d\n", dm.w,dm.h);
@@ -27,63 +39,73 @@ Game *game_new(void)
   int y = dm.h/2 -360; /* coord. y du coin haut gauche de la fenêtre */
   g->window_width = 546-6; /* largeur de la fenêtre */
   g->window_height = 720; /* hauteur de la fenêtre */
-
+  g->si = si_new(g->window_width, g->window_height, g->pixel_size);
+  if (!g->si)
+    {
+      SDL_Quit();
+      free(g);
+      return NULL;
+    }
   
-  /* SDL doit être initialisé */
-  if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-    SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error : %s\n", SDL_GetError());
-  }
-  
-  /* création de la fenêtre */
+  // création de la fenêtre
   g->win = SDL_CreateWindow("Space Invaders", x, y, g->window_width, g->window_height, SDL_WINDOW_SHOWN);
-  if (g->win == NULL) {
-    SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error : %s\n", SDL_GetError());
-    SDL_Quit();
-  }
-
+  if (g->win == NULL)
+    {
+      SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error : %s\n", SDL_GetError());
+      si_del(g->si);
+      SDL_Quit();
+      free(g);
+      return NULL;
+    }
+  // création du renderer
   g->ren= SDL_CreateRenderer(g->win, -1, SDL_RENDERER_ACCELERATED);
-  if (g->ren == NULL) {
-    SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error : %s\n", SDL_GetError());
-    SDL_DestroyWindow(g->win);
-  }
-
-/*
-  // boucle des évènements
-  int running = 1;
-  int ret = 1;
-  
-  while (running) {
-    while (SDL_PollEvent(&events)) {
-      switch (events.type) {
-      case SDL_QUIT:
-	running = 0;
-	break;
-      case SDL_KEYDOWN:
-	switch (events.key.keysym.sym) {
-	case SDLK_q:
-	  running = 0;
-	  break;
-	}
-	break;
-      }
+  if (g->ren == NULL)
+    {
+      SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "error : %s\n", SDL_GetError());
+      SDL_DestroyWindow(g->win);
+      si_del(g->si);
+      SDL_Quit();
+      free(g);
+      return NULL;
     }
 
-    if (update)
-      game_update();
-  }
-  
-  ret = 0;
-
-  SDL_DestroyRenderer(ren);
- destroy_window:
-  SDL_DestroyWindow(win);
- sdl_quit:
-  SDL_Quit();
- err:
-  return ret;
-*/
-
   return g;
+}
+
+void game_del(Game *g)
+{
+  if (!g) return;
+  if (g->ren) SDL_DestroyRenderer(g->ren);
+  if (g->win) SDL_DestroyWindow(g->win);
+  if (g->si) si_del(g->si);
+
+  SDL_Quit();
+  free(g);
+}
+
+void game_run(Game *g)
+{
+    if (!g) return;
+
+    SDL_Event events;
+    int running = 1;
+
+    while (running) {
+        while (SDL_PollEvent(&events)) {
+            switch (events.type) {
+            case SDL_QUIT:
+                running = 0;
+                break;
+            case SDL_KEYDOWN:
+                if (events.key.keysym.sym == SDLK_q) running = 0;
+                break;
+            }
+        }
+
+        if (g->update) {
+            game_update(g);
+        }
+    }
 }
 
 void game_update(Game *g)
@@ -93,41 +115,33 @@ void game_update(Game *g)
   SDL_RenderClear(g->ren);
   /* ON DESSINE TOUT EN BLANC ENSUITE */
   SDL_SetRenderDrawColor(g->ren, 255, 255, 255, 255);
-  
-  si_text_display("SCORE<1> HI-score score<2>", 0, 0, 3, 6);
-  si_text_display("0000", 2, 2, 3, 6);
-  si_text_display("0000", 2, 11, 3, 6);
-  si_text_display("0000", 2, 20, 3, 6);
-  si_text_display("PLAY", 7, 11, 3, 6);
-  si_text_display("SPACE  INVADERS", 9, 6, 3, 6);
-  si_text_display("*SCORE ADVANCE TABLE*", 12, 2, 3, 6);
-  si_text_display("? MYSTERY", 14, 9, 3, 6);
-  si_ufo_display(110, 340, 3);
-  si_text_display("=30 POINTS", 16, 8, 3, 6);
-  si_invader_display(0, 0, 118, 386, 3);
-  si_text_display("=20 POINTS", 18, 8, 3, 6);
-  si_invader_display(1, 0, 118, 435, 3);
-  si_text_display("=10 POINTS", 20, 8, 3, 6);
-  si_invader_display(2, 0, 118, 482, 3);
-  si_text_display("CREDIT", 29, 9, 3, 6);
 
-  /*
-  si_tank_display(300, 550, 3);
-  si_tank_shoot_display(300, 510, 3);
-  si_tank_explode_display(0, 350, 550, 3);
-  si_tank_explode_display(1, 400, 550, 3);
-    
-  si_invader_display(0, 1, 0, 200, 3);
-  si_invader_display(0, 0, 40, 200, 3);
-  si_invader_display(1, 0, 80, 200, 3);
-  si_invader_display(1, 1, 120, 200, 3);
-  si_invader_display(2, 0, 160, 200, 3);
-  si_invader_display(2, 1, 200, 200, 3);
-  si_invader_explode_display(240, 200, 3);
-  si_ufo_display(150, 500, 3);
-  si_shoot_display(120,240,3);
-  */
-  /* copie du renderer dans la fenêtre */
+  if (!g->play_game)
+    {
+      menu(g);
+    }
+  else if (g->si->life_1 == 0)
+    {
+      game_over(g);
+    }
+  else
+    {
+      /* Afficher les ennemis (matrice) */
+      si_invaders_display(g, g->si->invaders.x, g->si->invaders.y);
+
+      /* Si les ennemis tirent, afficher la bombe */
+      if (g->si->invaders.firing)
+	si_shoot_display(g, g->si->invaders.bomb_x, g->si->invaders.bomb_y);
+
+      /* Afficher le tank (il est sur la dernière ligne de caractères) */
+      si_tank_display(g, g->si->tank.x, (29 * 8 * g->pixel_size));
+
+      /* Si le tank tire, afficher le tir */
+      if (g->si->tank.firing)
+	si_tank_shoot_display(g, g->si->tank.shoot_x, g->si->tank.shoot_y);
+    }
+  
   SDL_RenderPresent(g->ren);
-  update = 0;
+
+  g->update = 0;
 }

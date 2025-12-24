@@ -9,6 +9,7 @@ int main(int argc, char *argv[])
     return 1;
 
   game_update(g);
+  
   return 0;
   (void)argc;
   (void)argv;
