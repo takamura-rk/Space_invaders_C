@@ -87,8 +87,9 @@ void game_del(Game *g)
 
 void game_run(Game *g)
 {
-  int running = 1;
-  SDL_Event events;
+  int running ;
+  running = 1;
+  
 
 
   while (running)
@@ -234,6 +235,10 @@ void game_run(Game *g)
 	      g->count_shoot = c_shoot;
 	    }
 	  
+	}
+      if(g->update)
+	{
+	  game_update(g);
 	}
     }
 }
