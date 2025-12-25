@@ -35,6 +35,9 @@ Si *si_new(int window_width, int window_height, int pixel_size)
   si->tank.x = (window_width / 2) - (13 * pixel_size) / 2;
   si->tank.firing = 0;
 
+  si->tank.destroyed_count=0;
+    
+
 
   return si;
 }

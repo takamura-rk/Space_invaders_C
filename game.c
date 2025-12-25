@@ -2,6 +2,7 @@
 #include "si_sdl.h"
 #include "si.h"
 #include "si_menu.h"
+#include "si_font.h"
 
 Game *game_new(void)
 {
@@ -92,7 +93,9 @@ void game_run(Game *g)
 
   while (running)
     {
-    
+      SDL_Event events;
+      Uint64 c_shoot;
+      Uint64 c_invaders;
       while (SDL_PollEvent(&events))
 	{
 	  switch (events.type)
@@ -101,34 +104,140 @@ void game_run(Game *g)
 	      running = 0; //On ferme la fenetre
 	      break;
 	    case SDL_KEYDOWN:
-	      switch (events.key.keysym.sym)
-		{
-		case SDLK_q:
-		  running = 0; //On ferme la fenetre
-		  break;
-		case SDLK_ESCAPE:
-		  running = 0;
-		  break;
-		case SDLK_SPACE:
-		  if (!g->play_game)
+	      {
+		switch (events.key.keysym.sym)
+		  {
+		  case SDLK_q:
 		    {
-		      g->play_game = 1;   
-		      g->update = 1;    
+		      running = 0; //On ferme la fenetre
+		      break;
 		    }
-		  break; 
-		}
-	      break;
+		  case SDLK_ESCAPE:
+		    {
+		      running = 0;
+		      break;
+		    }
+		  case SDLK_SPACE:
+		    {
+		      /* si le jeux n'est pas lancer on lance et on met à jour */
+		      if (!g->play_game)
+			{
+			  g->play_game = 1;   
+			  g->update = 1;    
+			}
+		      /* si le jeux est déjà lancer et qu'un tire n'est pas en cour on lance le tire et on met à jour les coordnnées */
+		      else if(!g->si->tank.firing)
+			{
+			  int tank_width;
+			  
+			  g->si->tank.firing = 1;
 
+			  si_font_tank_get(&tank_width);
+			  g->si->tank.shoot_x = g->si->tank.x + tank_width/2;
+			  g->si->tank.shoot_y= g->si->window_height - 2 * 8 * g->si->pixel_size;
+			  g->update = 1;
+			
+			}
+		    }
+		  }
+		
+		break; 
+	      }
+	    case SDL_MOUSEMOTION:
+	      {
+		g->si->tank.x = events.motion.x;
+		si_tank_set_position(g);
+		g->update = 1;
+		break;
+	      }
 	    }
-	  if (g->update)
+	  
+	}
+      if (g->play_game==0)
+	{
+	  g->update = 1;
+	}
+      else
+	{
+	  c_invaders = SDL_GetPerformanceCounter();
+	  c_shoot = SDL_GetPerformanceCounter();
+
+	  /* animation lente pour les ennemis */
+	  if ((float)(c_invaders- g->count_invaders) / g->freq > 0.1)
 	    {
-	      game_update(g);
+	      if (g->si->tank.destroyed)
+		{
+		  g->si->tank.destroyed_count++;
+		  if(g->si->tank.destroyed_count++ >= 6)
+		    {
+		      g->si->tank.destroyed=0;
+		      g->si->tank.destroyed_count=0;
+		      g->si->life_1--;
+		      
+			
+		    }
+		  g->update = 1;
+		  
+		}
+	      else
+		{
+		  if(g->si->invaders.direction==1)
+		    {
+		      if(si_invaders_can_move_right(g->si))
+			{
+			  g->update=1;
+			}
+		    }
+		  else
+		    {
+		      if(si_invaders_can_move_left(g->si))
+			{
+			  g->update = 1;
+			}
+		    }
+		}
+	      g->count_invaders = c_invaders;
 	    }
-	  break;
+
+	  /* animation rapide pour les 2 tirs */
+	  if ((float)(c_shoot- g->count_shoot) / g->freq > 0.005)
+	    {
+	      /* si le tank tire ... */
+	      if (g->si->tank.firing)
+		{
+		  if (si_tank_shoot_can_move_up(g->si))
+		    {
+		      g->update = 1;
+		    }
+		}
+	      /* si les ennemis ne tire pas ... */
+	      if (!g->si->invaders.firing)
+		{
+		  /* on trouve une colonne aléatoirement */
+		  si_invaders_get_column(g->si);
+		  /* et on dit que les ennemi ont tiré */
+		  g->si->invaders.firing = 1;
+		}
+
+	      /* si les ennemis ont tirés */
+	      if (g->si->invaders.firing)
+		{
+		  /*
+		   * si la bombe peut descendre, on la déplace et
+		   * on met à jour
+		   */
+		  if (si_invaders_bomb_can_move_down(g->si))
+		    {
+		      g->update = 1;
+		    }
+		}
+	      g->count_shoot = c_shoot;
+	    }
+	  
 	}
     }
 }
-
+  
 void game_update(Game *g)
 {
   /* FOND NOIR */

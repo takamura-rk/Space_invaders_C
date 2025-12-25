@@ -1,5 +1,6 @@
 #include "si_sdl.h"
 #include "si_menu.h"
+#include "game.h"
 #include <SDL2/SDL.h>
 
 void menu(Game *g)

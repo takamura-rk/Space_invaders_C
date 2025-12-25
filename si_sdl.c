@@ -3,7 +3,7 @@
 #include <SDL2/SDL.h>
 #include "si_sdl.h"
 #include "si_font.h"
-#include "game.h"
+
 #include "si.h"
 
 extern char *si_get_matrix(void);
@@ -85,6 +85,25 @@ void si_tank_explode_display(Game *g, int frame, int x, int y)
 {
   si_display_sprite(g, &si_font_tank_explode[frame][0][0], 8, 16, x, y);
 }
+
+void si_tank_set_position(Game *g)
+{
+    int tank_width;
+
+    si_font_tank_get(&tank_width);
+
+    if (g->si->tank.x < 0)
+        g->si->tank.x = 0;
+
+    if (g->si->tank.x >
+        g->si->window_width - tank_width * g->si->pixel_size)
+    {
+        g->si->tank.x =
+            g->si->window_width - tank_width * g->si->pixel_size;
+    }
+}
+
+
 void si_invader_display(Game *g, int type, int frame, int x, int y)
 {
   si_display_sprite(g, &si_font_invaders[type][frame][0][0], 8, 12, x, y);
@@ -97,7 +116,7 @@ void si_ufo_display(Game *g, int x, int y)
 {
   si_display_sprite(g, &si_font_ufo[0][0], 8, 16, x, y);
 }
-void si_shoot_display(Game *g, int x, int y)
+void si_invaders_shoot_display(Game *g, int x, int y)
 {
   si_display_sprite(g, &si_font_invader_shoot[0][0],8,5,x,y);
 }
