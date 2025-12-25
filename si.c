@@ -32,13 +32,22 @@ Si *si_new(int window_width, int window_height, int pixel_size)
   si->life_2 = 1;
   si->score_highest =0;
 
+  /*tank*/
   si->tank.x = (window_width / 2) - (13 * pixel_size) / 2;
   si->tank.firing = 0;
-
+  si->tank.shoot_x=0;
+  si->tank.shoot_y=0;
+  si->tank.destroyed=0;
   si->tank.destroyed_count=0;
-    
 
-
+  /*invaders*/
+  si->invaders.x=pixel_size;
+  si->invaders.y=pixel_size;
+  si->invaders.direction=1;
+  si->invaders.firing=0;
+  si->invaders.bomb_x = 0;
+  si->invaders.bomb_y = 0;
+  
   return si;
 }
 
@@ -249,5 +258,6 @@ int si_invaders_can_move_right(Si *si)
    if(si->tank.firing==0){
      return 0;
    }
+   return 0;
  }
 
