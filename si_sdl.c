@@ -74,7 +74,7 @@ void si_text_display(Game *g,const char *text, int l, int c, int spacing)
 }
 void si_tank_display(Game *g, int x, int y)
 {
-  si_display_sprite(g, &si_font_tank[0][0], 8, 13, x, y-1);
+  si_display_sprite(g, &si_font_tank[0][0], 8, 13, x, y);
 }
 void si_tank_shoot_display(Game *g, int x, int y)
 {
