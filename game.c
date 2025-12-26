@@ -13,11 +13,11 @@ Game *game_new(void)
   
   g->win=NULL;
   g->ren=NULL;
-  g->window_width=546-6;
-  g->window_height=720;
+  g->window_width=546-6;/* largeur de la fenêtre */
+  g->window_height=720;/* hauteur de la fenêtre */
   g->pixel_size=3;
   g->play_game=0;
-  g->si = NULL;
+  g->si = si_new(g->window_width,g->window_height,g->pixel_size);
   g->freq=1;
   g->count_invaders=0;
   g->count_shoot=0;
@@ -33,13 +33,12 @@ Game *game_new(void)
   
   SDL_DisplayMode dm;
   SDL_GetCurrentDisplayMode(0, &dm);
-  printf("Résolution : %d x %d\n", dm.w,dm.h);
+ 
     
   int x = dm.w/2 -273 +3; /* coord. x du coin haut gauche de la fenêtre */
-  int y = dm.h/2 -360; /* coord. y du coin haut gauche de la fenêtre */
-  g->window_width = 546-6; /* largeur de la fenêtre */
-  g->window_height = 720; /* hauteur de la fenêtre */
-  g->si = si_new(g->window_width, g->window_height, g->pixel_size);
+  int y = g->window_height/2 -360; /* coord. y du coin haut gauche de la fenêtre */
+ 
+
   if (!g->si)
     {
       SDL_Quit();
@@ -134,7 +133,7 @@ void game_run(Game *g)
 			  g->si->tank.firing = 1;
 
 			  si_font_tank_get(&tank_width);
-			  g->si->tank.shoot_x = g->si->tank.x + tank_width/2;
+			  g->si->tank.shoot_x = g->si->tank.x + g->pixel_size*tank_width/2;
 			  g->si->tank.shoot_y= g->si->window_height - 2 * 8 * g->si->pixel_size;
 			  g->update = 1;
 			
@@ -266,9 +265,13 @@ void game_update(Game *g)
   else
     {
       si_invaders_display(g, 30, 120);
+      if(g->si->invaders.firing)
+	si_invaders_shoot_display(g,g->si->invaders.bomb_x,g->si->invaders.bomb_y);
 
-      int tank_y = g->window_height - (8 * g->pixel_size);
+      int tank_y = g->window_height - 2*(8 * g->pixel_size);
       si_tank_display(g, g->si->tank.x, tank_y);
+      if(g->si->tank.firing)
+	si_tank_shoot_display(g,g->si->tank.shoot_x,g->si->tank.shoot_y);
     }
   SDL_RenderPresent(g->ren);
 
