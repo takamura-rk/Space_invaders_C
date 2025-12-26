@@ -158,17 +158,20 @@ void si_invaders_get_column(Si *si){
   int lar_bomb=5 * si->pixel_size;
   int haut_inv=8 * si->pixel_size;
   
-  for(i=4;i>=0;i--){
-    if(matrice[i][col]!=0){
-      /*calcule des coordonnées de bomb_x*/
-      si->invaders.bomb_x = si->invaders.x + col * lar_inv + (lar_inv - lar_bomb)/2;
-      
-      /*calcule des coordonnées de bomb_y*/
-      si->invaders.bomb_y = si->invaders.y + (i+1) * haut_inv;
-
-      return;
+  for(i=4;i>=0;i--)
+    {
+      if(matrice[i][col]!=0)
+	{
+	  /*calcule des coordonnées de bomb_x*/
+	  si->invaders.bomb_x = si->invaders.x + col * lar_inv + (lar_inv - lar_bomb)/2;
+	  
+	  /*calcule des coordonnées de bomb_y*/
+	  si->invaders.bomb_y = si->invaders.y + (i+1) * haut_inv;
+	  
+	  return;
+	}
     }
-  }  
+  si->invaders.firing=0;
 }
 
 /*

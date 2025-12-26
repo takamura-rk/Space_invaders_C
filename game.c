@@ -1,3 +1,5 @@
+#include <time.h>
+
 #include "game.h"
 #include "si_sdl.h"
 #include "si.h"
@@ -18,7 +20,7 @@ Game *game_new(void)
   g->pixel_size=3;
   g->play_game=0;
   g->si = si_new(g->window_width,g->window_height,g->pixel_size);
-  g->freq=1;
+  g->freq=2;
   g->count_invaders=0;
   g->count_shoot=0;
   g->update=1;
@@ -38,7 +40,7 @@ Game *game_new(void)
   int x = dm.w/2 -273 +3; /* coord. x du coin haut gauche de la fenêtre */
   int y = g->window_height/2 -360; /* coord. y du coin haut gauche de la fenêtre */
  
-
+  
   if (!g->si)
     {
       SDL_Quit();
@@ -69,7 +71,7 @@ Game *game_new(void)
       return NULL;
     }
 
-
+  srand(time(NULL));
   return g;
 }
 
@@ -264,10 +266,10 @@ void game_update(Game *g)
     }
   else
     {
-      si_invaders_display(g, 30, 120);
+      si_invaders_display(g, g->si->invaders.x, g->si->invaders.y);
       if(g->si->invaders.firing)
 	si_invaders_shoot_display(g,g->si->invaders.bomb_x,g->si->invaders.bomb_y);
-
+      
       int tank_y = g->window_height - 2*(8 * g->pixel_size);
       si_tank_display(g, g->si->tank.x, tank_y);
       if(g->si->tank.firing)
