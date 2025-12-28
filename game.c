@@ -20,7 +20,7 @@ Game *game_new(void)
   g->pixel_size=3;
   g->play_game=0;
   g->si = si_new(g->window_width,g->window_height,g->pixel_size);
-  g->freq=2;
+  g->freq=SDL_GetPerformanceFrequency();;
   g->count_invaders=0;
   g->count_shoot=0;
   g->update=1;
@@ -140,6 +140,7 @@ void game_run(Game *g)
 			  g->update = 1;
 			
 			}
+		      break;
 		    }
 		  }
 		

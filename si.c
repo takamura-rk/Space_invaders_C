@@ -134,9 +134,20 @@ int si_tank_is_hit(Si *si)
   if(si->invaders.firing==0){
     return 0;
   }
- 
-  
-
+  int bx = si->invaders.bomb_x;
+  int by = si->invaders.bomb_y;
+  int bw = 5 * si->pixel_size; /*largeur du rectangle de la bomb*/
+  int bh = 8 * si->pixel_size; /*hauteur du rectangle de la bomb*/
+  int tx = si->tank.x;
+  int ty = si->window_height - (16 * si->pixel_size);
+  int tw = 13 * si->pixel_size; /*largeur du rectangle du tank*/
+  int th = 8 * si->pixel_size; /*hauteur du rectangle du tank*/  
+  if( bx < tx + tw && bx + bw > tx && by < ty + th && by + bh > ty)
+    {
+      si->tank.destroyed = 1;
+      si->invaders.firing = 0;
+      return 1;
+    }
   
   return 1;
   }
@@ -163,7 +174,7 @@ void si_invaders_get_column(Si *si){
       if(matrice[i][col]!=0)
 	{
 	  /*calcule des coordonnées de bomb_x*/
-	  si->invaders.bomb_x = si->invaders.x + col * lar_inv + (lar_inv - lar_bomb)/2;
+	  si->invaders.bomb_x = si->invaders.x + col * (lar_inv + 2*si->pixel_size) + (lar_inv - lar_bomb)/2;
 	  
 	  /*calcule des coordonnées de bomb_y*/
 	  si->invaders.bomb_y = si->invaders.y + (i+1) * haut_inv;
@@ -231,7 +242,12 @@ int si_invaders_can_move_left(Si *si)
 
 int si_invaders_can_move_right(Si *si)
 {
-  int width_matrix= 10 * 8 *si->pixel_size;
+  /* calcul de la largeur total du bloc d'ennemis:
+     11 ennemis de 12 pixels de lar + 10 espace de 2 pixel de largeur donc
+     152
+   */
+  int total_width= 152;
+  int width_matrix= total_width *si->pixel_size;
     
   /*vérifier si la direction est correcte*/
   if(si->invaders.direction != 1){
@@ -261,6 +277,38 @@ int si_invaders_can_move_right(Si *si)
    if(si->tank.firing==0){
      return 0;
    }
-   return 0;
+   /* rectangles des invaders et leur dimensions */ 
+   int inv_w = 12 * si->pixel_size;
+   int inv_h = 8 * si->pixel_size;
+   int gap_x = 2 * si->pixel_size;
+   int gap_y = 3 * si->pixel_size;
+   /* rectangle du shoot du tank et ses dimensions */
+    int sx = si->tank.shoot_x;
+    int sy = si->tank.shoot_y;
+    int sw = 1 * si->pixel_size;
+    int sh = 8 * si->pixel_size;
+    for(int row = 0; row < 5; ++row)
+      {
+	for(int col = 0; col < 11; ++col)
+	  {
+	    if (matrice[row][col] == 0)
+	      continue;
+	  
+	    int ax = si->invaders.x + col * (inv_w + gap_x);
+	    int ay = si->invaders.y + row * (inv_h + gap_y);
+	    
+	    if (sx < ax + inv_w && sx + sw > ax &&
+		sy < ay + inv_h && sy + sh > ay)
+	      {
+		si->score_1 += si_get_points(matrice[row][col]);
+		matrice[row][col] = 0; 
+		/*	si_check_highscore(si);
+			si->sound_explode_flag = 1;*/
+		return 1;
+	      }
+	  }
+      }
+    
+    return 1;
  }
 

@@ -41,6 +41,8 @@ void menu(Game *g)
 
 void game_over(Game *g)
 {
-  return;
+  si_text_display(g, "GAME OVER", 10, 10, 6);
+  si_text_display(g, "PRESS SPACE", 15, 9, 6);
+  si_text_display(g, "TO RESTART", 17, 9, 6);
 }
 
