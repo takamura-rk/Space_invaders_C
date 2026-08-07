@@ -1,7 +1,7 @@
 #ifndef SI_H
 #define SI_H
 
-
+#include <SDL2/SDL.h>
 
 /* type d'ennemi */
 typedef enum
@@ -15,6 +15,7 @@ typedef enum
 
 typedef struct Invaders Invaders;
 typedef struct Tank Tank;
+typedef struct Ufo Ufo;
 typedef struct Si Si;
 
 struct Invaders
@@ -35,6 +36,17 @@ struct Tank
   int destroyed;
   int destroyed_count;
 };
+/* Structure UFO */
+struct Ufo
+{
+  int active;
+  int x;
+  int y;
+  int dir; /* +-1 ,va vers la gauche ou la droite */
+  Uint64 spawn_counter;
+  Uint64 move_counter;
+  Uint64 next_spawn_allowed;
+};
 struct Si
 {
   int window_width;
@@ -46,8 +58,17 @@ struct Si
   int score_2;
   int life_2;
   int score_highest;
+  int wave;
+
+ 
+  int sound_shoot_flag;// bruit de tire
+  int sound_explode_flag;//bruit d'une explosion
+  int sound_wave_flag;// bruit lors d'une nouvelle vague
+
   Tank tank;
   Invaders invaders;
+  /* Ufo */
+  Ufo ufo;
 };
 
  /*
@@ -76,7 +97,7 @@ int si_get_points(Si_Type t);
  * teste si le tank peut se d\’eplacer vers le haut. SI c’est possible,
  * met à jour la coordonné y du tir da Tank.
  */
- int si_tank_shoot_can_move_up(Si *si);
+int si_tank_shoot_can_move_up(Si *si, int *hit_row, int *hit_col);
 
  /* renvoie 1 si le tank est touch\’e, 0 sinon */
  int si_tank_is_hit(Si *si);
@@ -115,7 +136,17 @@ int si_invaders_can_move_left(Si *si);
  * Renvoie 1 si un ennemi est touché par le tir du tank, 0 sinon.
  * Met à jour la matrice.
  */
- int si_invader_is_hit(Si *si);
+int si_invader_is_hit(Si *si, int *hit_row, int *hit_col);
+
+ /*
+   renvoie les points gagnés si l'ufo est touché, sinon 0
+ */
+int si_ufo_is_hit(Si *si); 
+
+/* Fonctions de gestion de partie */
+void si_reset(Si *si);
+void si_next_wave(Si *si);
+int si_check_collision_bottom(Si *si); // Vérifie si les ennemis touchent le fond */
 
 #endif 
 

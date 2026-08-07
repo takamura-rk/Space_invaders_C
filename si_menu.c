@@ -16,33 +16,11 @@ void menu(Game *g)
   si_invader_display(g,1, 0, 118, 435);
   si_text_display(g,"=10 POINTS", 20, 8, 6);
   si_invader_display(g,2, 0, 118, 482);
-  si_text_display(g,"CREDIT", 29, 9, 6);
-
-  /* ça c'est juste des exemples
-     
-  si_tank_display(g,300, 550);
-  si_tank_shoot_display(g,300, 510);
-  si_tank_explode_display(g,0, 350, 550);
-  si_tank_explode_display(g,1, 400, 550);
-    
-  si_invader_display(g, 0, 1, 0, 200);
-  si_invader_display(g, 0, 0, 40, 200);
-  si_invader_display(g, 1, 0, 80, 200);
-  si_invader_display(g, 1, 1, 120, 200);
-  si_invader_display(g, 2, 0, 160, 200);
-  si_invader_display(g, 2, 1, 200, 200);
-  si_invader_explode_display(g,240, 200);
-  si_ufo_display(g,150, 500);
-  si_shoot_display(g,120,240);
-  */
-  SDL_RenderPresent(g->ren);
-  return;
 }
 
 void game_over(Game *g)
 {
-  si_text_display(g, "GAME OVER", 10, 10, 6);
-  si_text_display(g, "PRESS SPACE", 15, 9, 6);
-  si_text_display(g, "TO RESTART", 17, 9, 6);
+  si_text_display(g, "GAME OVER", 10, 8, 6);
+  si_text_display(g, "PRESS SPACE", 15, 7, 6);
+  si_text_display(g, "TO RESTART", 17, 8, 6);
 }
-

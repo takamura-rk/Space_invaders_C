@@ -1,7 +1,8 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 #include "si_font.h"
 
 
@@ -17,6 +18,7 @@ typedef struct
   int window_height;
   int pixel_size;
   int play_game;
+  int paused;
   
   Si *si;
   
@@ -25,6 +27,15 @@ typedef struct
   Uint64 count_shoot;
   
   char update;
+  /* NOUVEAU : Animation des invaders */
+  int invader_frame;
+  
+  /* NOUVEAU : Les Sons */
+  Mix_Music *bg_music;      // Musique de fond (MP3)
+  Mix_Chunk *sfx_shoot;     // Bruitage tir (WAV)
+  Mix_Chunk *sfx_explode;   // Bruitage explosion (WAV)
+  Mix_Chunk *sfx_wave;      // Bruitage vague (WAV)
+  
 } Game;
 
 Game *game_new();

@@ -33,7 +33,5 @@ char *si_font_invader_get(Si_Type t, int model, int *width);
 
 
 
-
-
-
 #endif
+

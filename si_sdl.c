@@ -59,18 +59,29 @@ void si_display_sprite(Game *g, char *data, int rows, int cols, int x, int y)
   }
 }
 
-/* fonction qui affiche une phrase */
-void si_text_display(Game *g,const char *text, int l, int c, int spacing)
+/* Fonction qui affiche une phrase à l'écran */
+void si_text_display(Game *g, const char *text, int ligne, int colonne, int spacing)
 {
-  int i = 0;
-  int x = c *7*3;
-  int y = l *8*3;
-  while (text[i] != '\0') {   // tant qu'on n'est pas à la fin de la phrase
-    int index = font_index_from_char(text[i]);
-    si_display_sprite(g, &si_font_alphanum[index][0][0], 8, 5, x, y);
-    x += 5 * g->pixel_size + spacing; /* se déplace vers la droite pour la prochaine lettre */
-    i++;
-  }
+    /* 1. On calcule la position de départ (Haut-Gauche) */
+    /* On suppose qu'une case de la grille fait 7 unités de large (5px de lettre + 2px d'espace) */
+    /* Et 8 unités de haut (hauteur de la lettre) */
+    int x = colonne * (7 * g->pixel_size); 
+    int y = ligne   * (8 * g->pixel_size);
+
+    /* 2. On parcourt le texte lettre par lettre */
+    for (int i = 0; text[i] != '\0'; i++) 
+    {
+        /* On récupère l'index du caractère dans notre tableau de police */
+        int index = font_index_from_char(text[i]);
+
+        /* On affiche le sprite de la lettre */
+        /* 8 = hauteur du sprite, 5 = largeur du sprite */
+        si_display_sprite(g, &si_font_alphanum[index][0][0], 8, 5, x, y);
+
+        /* 3. On déplace le curseur X vers la droite pour la prochaine lettre */
+        /* Décalage = (Largeur de la lettre * taille du pixel) + espacement supplémentaire */
+        x += (5 * g->pixel_size) + spacing;
+    }
 }
 void si_tank_display(Game *g, int x, int y)
 {
@@ -123,22 +134,20 @@ void si_invaders_shoot_display(Game *g, int x, int y)
 
 void si_invaders_display(Game *g, int x0, int y0)
 {
-    /* Matrice 5x11 aplatie */
     char *m = si_get_matrix();
 
     /* Dimensions d’un sprite invader : 8 lignes x 12 colonnes */
-    const int SPR_W = 12 * g->pixel_size;
-    const int SPR_H = 8  * g->pixel_size;
-
-    /* Espacement entre ennemis */
-    const int GAP_X = 2 * g->pixel_size;
-    const int GAP_Y = 3 * g->pixel_size;
+    const int w = 12 * g->pixel_size;
+    const int h = 8  * g->pixel_size;
+    /* Espacement entre chacun des invaders */
+    const int gap_x = 2 * g->pixel_size;
+    const int gap_y = 5 * g->pixel_size;
 
     for (int row = 0; row < 5; ++row) {
         for (int col = 0; col < 11; ++col) {
 
             int v = m[row * 11 + col];
-            if (v == 0) continue; /* ennemi détruit */
+            if (v == 0) continue;
             //  1,2,3 dans la matrice d'ennemis -> type 0,1,2 pour si_invader_display
             int type = 0;
             if (v == 1)
@@ -149,10 +158,10 @@ void si_invaders_display(Game *g, int x0, int y0)
 	      type = 2;
             else continue; /* valeur inattendue */
 
-            int x = x0 + col * (SPR_W + GAP_X);
-            int y = y0 + row * (SPR_H + GAP_Y);
+            int x = x0 + col * (w + gap_x);
+            int y = y0 + row * (h + gap_y);
 
-            si_invader_display(g, type, 0, x, y);
+            si_invader_display(g, type, g->invader_frame, x, y);
         }
     }
 }
